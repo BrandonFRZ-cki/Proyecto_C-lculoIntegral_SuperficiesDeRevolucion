@@ -52,3 +52,17 @@ title('Simulación 3D: Torre de Enfriamiento Nuclear', ...
 
 grid on;
 axis tight;
+% ---------------------------------------
+% RESOLUCION MEDIANTE CODIGO:
+
+% Funciones
+r = @(x) a .* sqrt(1 + (x.^2) / c^2);
+rp = @(x) (a .* x) ./ (c^2 .* sqrt(1 + (x.^2)/c^2));
+integrando = @(x) 2 * pi .* r(x) .* sqrt(1 + (rp(x)).^2);
+
+% Cálculo numérico
+x_min = -5;
+x_max = 137.5;
+area_superficie = integral(integrando, x_min, x_max);
+
+fprintf('Área de la superficie: %.2f m^2\n', area_superficie);

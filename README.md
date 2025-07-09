@@ -1,56 +1,103 @@
 # 🧊 Torres de Enfriamiento como Superficies de Revolución
 
-Este proyecto presenta el modelado de una torre de enfriamiento nuclear como una **superficie de revolución hiperboloide**, integrando conceptos de cálculo integral, ingeniería y visualización computacional.
+Este proyecto presenta el modelado de una **torre de enfriamiento nuclear** como una **superficie de revolución hiperboloide**, integrando conceptos de cálculo integral, modelado computacional y construcción a escala.
 
 ---
 
 ## 📘 Descripción General
 
-Una torre de enfriamiento se utiliza en plantas nucleares para disipar el calor sobrante. Su forma hiperboloide no solo es estética: maximiza el flujo de aire y mejora la eficiencia térmica. En este proyecto, se modela matemáticamente su estructura como una superficie generada al rotar una hipérbola.
+Las torres de enfriamiento son estructuras utilizadas en plantas nucleares e industriales para disipar el calor sobrante. Su diseño tipo **hiperboloide de revolución** no es solo estético, sino altamente funcional: permite una ventilación natural eficiente, estabilidad estructural y menor consumo de materiales.
+
+En este proyecto se analiza una torre con **medidas reales**, se realiza su simulación en MATLAB, se calcula su **área superficial exacta**, y se construye una **maqueta a escala** con una altura de 20 cm.
 
 ---
+## 🧊 Medidas reales de una torre de enfriamiento nuclear
+Estas dimensiones corresponden a torres de enfriamiento de tipo hiperboloide de tiro natural, usadas en centrales nucleares como la de Niederaussem (Alemania) o la de Kalisindh (India). Son estructuras de referencia internacional.
+| Elemento                             | Valor típico (real)                 |
+| ------------------------------------ | ----------------------------------- |
+| **Altura total**                     | 142.5 m                             |
+| **Radio mínimo (cintura)**           | 33.23 m                             |
+| **Radio máximo (base o boca)**       | \~50 m                              |
+| **Diámetro mínimo (cintura)**        | \~66.46 m                           |
+| **Diámetro máximo (boca/base)**      | \~100 m                             |
+| **Altura de cintura (mínimo radio)** | \~60–70 m desde la base             |
+| **Espesor promedio de pared**        | 0.25–0.5 m (superior), 1.5 m (base) |
+| **Área superficial externa**         | \~38,000 m²                         |
+| **Volumen interno de aire**          | \~200,000 m³                        |
 
+
+---
 ## 🧮 Modelo Matemático
 
-Se utiliza la ecuación general del **hiperboloide de una hoja**:
+### 🔹 Paso 1: Definir la curva generatriz
+La torre se genera al rotar la siguiente curva en torno al eje **x**:
+
+$$r(x) = a \cdot \sqrt{1 + \frac{x^2}{c^2}}$$
 
 
+Donde:
+- Radio mínimo (en la cintura de la grafica completa)
+$$ a = 33.23$$ 
+- Factor de estiramiento vertical
+$$ c = 97.2 m $$  
+Intervalo real de la torre
+$$ x -5, 137.5m$$ 
 
+### 🔹 Paso 2: Definir el intervalo de integración
 
-![alt text](image.png)
+$$x_{\text{min}} = -5, \quad x_{\text{max}} = 137.5
+$$
 
+$$h = x_{\text{max}} - x_{\text{min}} = 142.5
+$$
 
+### 🔹 Paso 3: Calcular la derivada de 𝑟(𝑥)
+$$r'(x) = \frac{a \cdot x}{c^2 \cdot \sqrt{1 + \frac{x^2}{c^2}}}
+$$
 
+### 🔹 Paso 4: Plantear la integral de superficie de revolución
+- Fromula
+$$S = 2 \pi \int_{x_1}^{x_2} r(x) \cdot \sqrt{1 + \left(r'(x)\right)^2} \, dx
+$$
+- Remplazado
+$$S = 2\pi \int_{-5}^{137.5} 
+\left(
+a \cdot \sqrt{1 + \frac{x^2}{c^2}} \cdot 
+\sqrt{1 + \left( \frac{a \cdot x}{c^2 \cdot \sqrt{1 + \frac{x^2}{c^2}}} \right)^2}
+\right)
+\, dx
+$$
 
-O también una curva generatriz para revolución alrededor del eje X:
-
-
-
-
-![alt text](image-1.png)
-
-
-
-
-Para calcular el **área superficial** generada:
-
-
-
-![alt text](image-2.png)
-
+### 🔹 Paso 5: Resolver la integral numéricamente
+$$S \approx 38307.27\,\text{m}^2
+$$
 
 
 ---
 
-## 📏 Medidas Reales y Maqueta a Escala
+### 🟩 Resultado del cálculo en MATLAB:
 
-| Parámetro              | Real (m) | Escala 1:500 | Maqueta (cm) |
-|------------------------|----------|--------------|---------------|
-| Altura total           | 200      | 1:500        | 40            |
-| Diámetro en la base    | 140      |              | 28            |
-| Diámetro del cuello    | 70       |              | 14            |
 
----
+Área de la superficie: $$38307.27 m^2$$
+
+```matlab
+
+% ---------------------------------------
+% RESOLUCION MEDIANTE CODIGO:
+
+% Funciones
+r = @(x) a .* sqrt(1 + (x.^2) / c^2);
+rp = @(x) (a .* x) ./ (c^2 .* sqrt(1 + (x.^2)/c^2));
+integrando = @(x) 2 * pi .* r(x) .* sqrt(1 + (rp(x)).^2);
+
+% Cálculo numérico
+x_min = -5;
+x_max = 137.5;
+area_superficie = integral(integrando, x_min, x_max);
+
+fprintf('Área de la superficie: %.2f m^2\n', area_superficie);
+
+```
 
 ## 💻 Código MATLAB
 
@@ -176,7 +223,12 @@ grid on;
 axis tight;
 
 
+
 ```
 
 ![alt text](image-5.png)
 ![alt text](image-6.png)
+
+
+
+
